@@ -1,0 +1,209 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="boo-window">
+  <template>
+    <style>
+      :host {
+        position: fixed;
+        display: block;
+        background-color: white;
+        z-index: 100;
+      }
+      .wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+      .wrapper>a {
+        position: absolute;
+        z-index: 10000;
+        background-color: rgba(0, 0, 0, 0);
+        display: block;
+        width: 10px;
+        height: 10px;
+      }
+      .wrapper>a.tl {
+        top: 0px;
+        left: 0px;
+      }
+      .wrapper>a.tl:hover {
+        cursor: nw-resize;
+      }
+      .wrapper>a.tr:hover {
+        cursor: ne-resize;
+      }
+      .wrapper>a.br:hover {
+        cursor: se-resize;
+      }
+      .wrapper>a.bl:hover {
+        cursor: sw-resize;
+      }
+      .wrapper>a.tr {
+        top: 0px;
+        right: 0px;
+      }
+      .wrapper>a.bl {
+        bottom: 0px;
+        left: 0px;
+      }
+      .wrapper>a.br {
+        bottom: 0px;
+        right: 0px;
+      }
+    </style>
+    <div class="wrapper">
+      <a class="tl"></a>
+      <a class="tr"></a>
+      <a class="bl"></a>
+      <a class="br"></a>
+      <div class="header">
+        <slot name="header"></slot>
+      </div>
+      <slot name="content"></slot>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `boo-window`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class BooWindow extends Polymer.Element {
+      static get is() { return 'boo-window'; }
+      static get properties() {
+        return {
+          // 从左上角为坐标原点的坐标系的横坐标
+          x: {
+            type: Number,
+            value: 0,
+            reflectToAttribute: true,
+            observer: 'update',
+            notify: true
+          },
+          // 从左上角为坐标原点的坐标系的纵坐标
+          y: {
+            type: Number,
+            value: 0,
+            reflectToAttribute: true,
+            observer: 'update',
+            notify: true
+          },
+          // 窗口高度，包括header-bar
+          height: {
+            type: Number,
+            value: 200,
+            reflectToAttribute: true,
+            observer: 'update',
+            notify: true
+          },
+          // 窗口宽度
+          width: {
+            type: Number,
+            value: 200,
+            reflectToAttribute: true,
+            observer: 'update',
+            notify: true
+          },
+          _moving: {
+            type: Boolean,
+            value: false
+          },
+          _resizing: {
+            type: Boolean,
+            value: false
+          },
+          _beginX: {
+            type: Number,
+          },
+          _beginY: {
+            type: Number,
+          },
+          _beginCursorX: {
+            type: Number,
+          },
+          _beginCursorY: {
+            type: Number,
+          },
+          _resizeTrigger: {
+            type: Object,
+          }
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        let _this = this;
+        let header = _this.shadowRoot.querySelector('div.header');
+        _this.shadowRoot.querySelectorAll('.wrapper>a').forEach(item => {
+          item.addEventListener('mousedown', e => {
+            _this._resizing = true;
+            _this._resizeTrigger = item;
+            _this._beginCursorX = e.screenX;
+            _this._beginCursorY = e.screenY;
+            _this._beginHeight = _this.height;
+            _this._beginWidth = _this.width;
+            _this._beginX = _this.x;
+            _this._beginY = _this.y;
+          });
+        });
+        header.addEventListener('mousedown', (e) => {
+          _this._moving = true;
+          _this._beginCursorX = e.screenX;
+          _this._beginCursorY = e.screenY;
+          _this._beginX = _this.x;
+          _this._beginY = _this.y;
+          header.style.cursor = 'move';
+        });
+        window.addEventListener('mouseup', () => {
+          _this._moving = false;
+          _this._resizing = false;
+          header.style.cursor = 'default';
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (_this._moving) {
+            _this.x = _this._beginX + e.screenX - _this._beginCursorX;
+            _this.y = _this._beginY + e.screenY - _this._beginCursorY;
+          }
+          if (_this._resizing) {
+            let x = e.screenX - _this._beginCursorX;
+            let y = e.screenY - _this._beginCursorY;
+            let klass = _this._resizeTrigger.getAttribute('class');
+            if (klass == 'tl') {
+              _this.x = _this._beginX + x;
+              _this.y = _this._beginY + y;
+              _this.height = _this._beginHeight - y;
+              _this.width = _this._beginWidth - x;
+            }
+            if (klass == 'tr') {
+              _this.y = _this._beginY + y;
+              _this.height = _this._beginHeight - y;
+              _this.width = _this._beginWidth + x;
+            }
+            if (klass == 'bl') {
+              _this.x = _this._beginX + x;
+              _this.height = _this._beginHeight + y;
+              _this.width = _this._beginWidth - x;
+            }
+            if(klass == 'br') {
+              _this.height = _this._beginHeight + y;
+              _this.width = _this._beginWidth + x;
+            }
+          }
+        });
+      }
+
+      update() {
+        this.style.left = this.x + 'px';
+        this.style.top = this.y + 'px';
+        this.style.height = this.height + 'px';
+        this.style.width = this.width + 'px';
+      }
+    }
+
+    window.customElements.define(BooWindow.is, BooWindow);
+  </script>
+</dom-module>

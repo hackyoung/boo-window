@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>boo-window demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../paper-styles/element-styles/paper-material-styles.html">
+    <link rel="import" href="../../app-layout/app-header/app-header.html">
+    <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+    <link rel="import" href="../boo-window.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+        boo-window {
+          @apply --shadow-elevation-16dp;
+        }
+        app-toolbar {
+          color: #fff;
+          background-color: #4285f4;
+        }
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic boo-window demo</h3>
+      <demo-snippet>
+        <template>
+          <boo-window width=400 height=300 x=200 y=200>
+            <app-toolbar slot="header">
+              hello world
+            </app-toolbar>
+            <div slot="content">
+              <p>
+                将鼠标放在四个角落可改变拖动改变大小
+              </p>
+              <p>
+                可用鼠标拖动蓝色区域拖放窗口
+              </p>
+            </div>
+          </boo-window>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>
