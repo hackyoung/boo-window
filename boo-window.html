@@ -179,24 +179,24 @@
           if (_this._resizing) {
             let x = e.screenX - _this._beginCursorX;
             let y = e.screenY - _this._beginCursorY;
-            let klass = _this._resizeTrigger.getAttribute('class');
-            if (klass == 'tl') {
+            let klass = _this._resizeTrigger.getAttribute('class').split(' ');
+            if (klass.indexOf('tl') != -1) {
               _this.x = _this._beginX + x;
               _this.y = _this._beginY + y;
               _this.height = _this._beginHeight - y;
               _this.width = _this._beginWidth - x;
             }
-            if (klass == 'tr') {
+            if (klass.indexOf('tr') != -1) {
               _this.y = _this._beginY + y;
               _this.height = _this._beginHeight - y;
               _this.width = _this._beginWidth + x;
             }
-            if (klass == 'bl') {
+            if (klass.indexOf('bl') != -1) {
               _this.x = _this._beginX + x;
               _this.height = _this._beginHeight + y;
               _this.width = _this._beginWidth - x;
             }
-            if(klass == 'br') {
+            if(klass.indexOf('br') != -1) {
               _this.height = _this._beginHeight + y;
               _this.width = _this._beginWidth + x;
             }
