@@ -156,6 +156,8 @@
             _this._beginWidth = _this.width;
             _this._beginX = _this.x;
             _this._beginY = _this.y;
+            let body = document.getElementsByTagName('body')[0];
+            body.style.userSelect = 'none';
           });
         });
         header.addEventListener('mousedown', (e) => {
@@ -165,11 +167,15 @@
           _this._beginX = _this.x;
           _this._beginY = _this.y;
           header.style.cursor = 'move';
+          let body = document.getElementsByTagName('body')[0];
+          body.style.userSelect = 'none';
         });
         window.addEventListener('mouseup', () => {
           _this._moving = false;
           _this._resizing = false;
           header.style.cursor = 'default';
+          let body = document.getElementsByTagName('body')[0];
+          body.style.userSelect = 'text';
         });
         window.addEventListener('mousemove', (e) => {
           if (_this._moving) {
