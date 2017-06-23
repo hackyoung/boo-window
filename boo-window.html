@@ -44,6 +44,12 @@
       .wrapper>a.bl:hover {
         cursor: sw-resize;
       }
+      :host([no-resize]) .wrapper>a.tl:hover,
+      :host([no-resize]) .wrapper>a.tr:hover,
+      :host([no-resize]) .wrapper>a.br:hover,
+      :host([no-resize]) .wrapper>a.bl:hover {
+        cursor: default;
+      }
       .wrapper>a.tr {
         top: 0px;
         right: 0px;
@@ -72,6 +78,17 @@
   </template>
 
   <script>
+
+    const POS_TOP_LEFT = 'top-left';
+    const POS_TOP = 'top';
+    const POS_TOP_RIGHT = 'top-right';
+    const POS_LEFT = 'left';
+    const POS_CENTER = 'center';
+    const POS_RIGHT = 'right';
+    const POS_BOTTOM_LEFT = 'bottom-left';
+    const POS_BOTTOM = 'bottom';
+    const POS_BOTTOM_RIGHT = 'bottom-right';
+
     /**
      * `boo-window`
      * 
@@ -116,6 +133,20 @@
             observer: 'update',
             notify: true
           },
+          noResize: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+          },
+          noMove: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+          },
+          posPolicy: {
+            type: String,
+            observer: '_posPolicyChanged'
+          },
           _moving: {
             type: Boolean,
             value: false
@@ -142,12 +173,93 @@
         };
       }
 
+      center() {
+        let rect = this._size();
+        return {
+          x: (BooWindow.screenWidth - rect.width) / 2,
+          y: (BooWindow.screenHeight - rect.height) / 2
+        };
+      }
+
+      topLeft() {
+        return {
+          x: 0,
+          y: 0
+        };
+      }
+
+      top() {
+        let rect = this._size();
+        return {
+          x: (BooWindow.screenWidth - rect.width) / 2,
+          y: 0
+        };
+      }
+
+      topRight() {
+        let rect = this._size();
+        return {
+          x: BooWindow.screenWidth - rect.width,
+          y: 0
+        };
+      }
+
+      left() {
+        let rect = this._size();
+        return {
+          x: 0,
+          y: (BooWindow.screenHeight - rect.height) / 2,
+        };
+      }
+
+      right() {
+        let rect = this._size();
+        return {
+          x: BooWindow.screenWidth - rect.width,
+          y: (BooWindow.screenHeight - rect.height) / 2,
+        };
+      }
+
+      bottomLeft() {
+        let rect = this._size();
+        return {
+          x: 0,
+          y: BooWindow.screenHeight - rect.height,
+        };
+      }
+
+      bottom() {
+        let rect = this._size();
+        return {
+          x: (BooWindow.screenWidth - rect.width) / 2,
+          y: BooWindow.screenHeight - rect.height,
+        };
+      }
+
+      bottomRight() {
+        let rect = this._size();
+        return {
+          x: BooWindow.screenWidth - rect.width,
+          y: BooWindow.screenHeight - rect.height,
+        };
+      }
+
+      _size() {
+        if(this.style.display == 'none') {
+          console.warning('元素'+this.tagName+'没有显示，无法计算位置');
+        }
+        return this.getBoundingClientRect();
+      }
+
       connectedCallback() {
         super.connectedCallback();
         let _this = this;
         let header = _this.shadowRoot.querySelector('div.header');
         _this.shadowRoot.querySelectorAll('.wrapper>a').forEach(item => {
           item.addEventListener('mousedown', e => {
+            if (_this.noResize) {
+              return;
+            }
             _this._resizing = true;
             _this._resizeTrigger = item;
             _this._beginCursorX = e.screenX;
@@ -161,6 +273,9 @@
           });
         });
         header.addEventListener('mousedown', (e) => {
+          if (_this.noMove) {
+            return;
+          }
           _this._moving = true;
           _this._beginCursorX = e.screenX;
           _this._beginCursorY = e.screenY;
@@ -215,6 +330,58 @@
         this.style.top = this.y + 'px';
         this.style.height = this.height + 'px';
         this.style.width = this.width + 'px';
+      }
+
+      _posPolicyChanged(policy) {
+        let pos = {
+          x: 0,
+          y: 0
+        };
+        switch(policy) {
+          case POS_TOP_LEFT:
+            pos = this.topLeft();
+            break;
+          case POS_TOP_RIGHT:
+            pos = this.topRight();
+            break;
+          case POS_TOP:
+            pos = this.top();
+            break;
+          case POS_LEFT:
+            pos = this.left();
+            break;
+          case POS_CENTER:
+            pos = this.center();
+            break;
+          case POS_RIGHT:
+            pos = this.right();
+            break;
+          case POS_BOTTOM_left:
+            pos = this.bottomLeft();
+            break;
+          case POS_BOTTOM:
+            pos = this.bottom();
+            break;
+          case POS_BOTTOM_RIGHT:
+            pos = this.bottomRight();
+            break;
+        }
+        this.x = pos.x;
+        this.y = pos.y;
+      }
+
+      static get screenWidth() {
+        if (document.documentElement.clientWidth) {
+          return document.documentElement.clientWidth;
+        }
+        return document.body.clientWidth;
+      }
+
+      static get screenHeight() {
+        if (document.documentElement.clientHeight) {
+          return document.documentElement.clientHeight;
+        }
+        return document.body.clientHeight;
       }
     }
 
