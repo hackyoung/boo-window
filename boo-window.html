@@ -141,7 +141,7 @@
             type: Number,
             value: 0,
             reflectToAttribute: true,
-            observer: 'update',
+            observer: '_update',
             notify: true
           },
           // 从左上角为坐标原点的坐标系的纵坐标
@@ -149,7 +149,7 @@
             type: Number,
             value: 0,
             reflectToAttribute: true,
-            observer: 'update',
+            observer: '_update',
             notify: true
           },
           // 窗口高度，包括header-bar
@@ -157,7 +157,7 @@
             type: Number,
             value: 200,
             reflectToAttribute: true,
-            observer: 'update',
+            observer: '_update',
             notify: true
           },
           // 窗口宽度
@@ -165,7 +165,7 @@
             type: Number,
             value: 200,
             reflectToAttribute: true,
-            observer: 'update',
+            observer: '_update',
             notify: true
           },
           noResize: {
@@ -368,11 +368,15 @@
         });
       }
 
-      update() {
+      _update() {
         this.style.left = this.x + 'px';
         this.style.top = this.y + 'px';
         this.style.height = this.height + 'px';
         this.style.width = this.width + 'px';
+      }
+
+      update() {
+        this._posPolicyChanged(this.posPolicy);
       }
 
       _posPolicyChanged(policy) {
