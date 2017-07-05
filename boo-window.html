@@ -421,7 +421,11 @@
         if (opened) {
           this.style.display = 'block';
           this._posPolicyChanged(this.posPolicy);
-          this.animate(this.openAnimationConfig, this.openDuration);
+          setTimeout(() => {
+            this.animate(
+              this.openAnimationConfig, this.openDuration
+            );
+          }, 0);
           return;
         }
         if (old === undefined) {
