@@ -182,6 +182,14 @@
             type: String,
             observer: '_posPolicyChanged'
           },
+          fixX: {
+            type: Number,
+            value: 0
+          },
+          fixY: {
+            type: Number,
+            value: 0
+          },
           _moving: {
             type: Boolean,
             value: false
@@ -211,71 +219,71 @@
       center() {
         let rect = this._size();
         return {
-          x: (BooWindow.screenWidth - rect.width) / 2,
-          y: (BooWindow.screenHeight - rect.height) / 2
+          x: (BooWindow.screenWidth - rect.width) / 2 + this.fixX,
+          y: (BooWindow.screenHeight - rect.height) / 2 + this.fixY
         };
       }
 
       topLeft() {
         return {
-          x: 0,
-          y: 0
+          x: this.fixX,
+          y: this.fixY
         };
       }
 
       top() {
         let rect = this._size();
         return {
-          x: (BooWindow.screenWidth - rect.width) / 2,
-          y: 0
+          x: (BooWindow.screenWidth - rect.width) / 2 + this.fixX,
+          y: this.fixY
         };
       }
 
       topRight() {
         let rect = this._size();
         return {
-          x: BooWindow.screenWidth - rect.width,
-          y: 0
+          x: BooWindow.screenWidth - rect.width + this.fixX,
+          y: this.fixY
         };
       }
 
       left() {
         let rect = this._size();
         return {
-          x: 0,
-          y: (BooWindow.screenHeight - rect.height) / 2,
+          x: this.fixX,
+          y: (BooWindow.screenHeight - rect.height) / 2 + this.fixY,
         };
       }
 
       right() {
         let rect = this._size();
         return {
-          x: BooWindow.screenWidth - rect.width,
-          y: (BooWindow.screenHeight - rect.height) / 2,
+          x: BooWindow.screenWidth - rect.width + this.fixX,
+          y: (BooWindow.screenHeight - rect.height) / 2 + this.fixY,
         };
       }
 
       bottomLeft() {
         let rect = this._size();
         return {
-          x: 0,
-          y: BooWindow.screenHeight - rect.height,
+          x: this.fixX,
+          y: BooWindow.screenHeight - rect.height + this.fixY,
         };
       }
 
       bottom() {
         let rect = this._size();
         return {
-          x: (BooWindow.screenWidth - rect.width) / 2,
-          y: BooWindow.screenHeight - rect.height,
+          x: (BooWindow.screenWidth - rect.width) / 2 + this.fixX,
+          y: BooWindow.screenHeight - rect.height + this.fixY,
         };
       }
 
       bottomRight() {
         let rect = this._size();
         return {
-          x: BooWindow.screenWidth - rect.width,
-          y: BooWindow.screenHeight - rect.height,
+          x: BooWindow.screenWidth - rect.width + this.fixX,
+          y: BooWindow.screenHeight - rect.height + this.fixY,
         };
       }
 
@@ -371,7 +379,7 @@
         if (!this.opened) {
           return;
         }
-        let pos = { x: 0, y: 0 };
+        let pos = { x: this.fixX, y: this.fixY };
         switch(policy) {
           case POS_TOP_LEFT:
             pos = this.topLeft();
