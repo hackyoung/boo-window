@@ -32,6 +32,7 @@
       <h3>Basic boo-window demo</h3>
       <demo-snippet>
         <template>
+          <button id="toggle">开启/关闭</button>
           <boo-window id="boo" width=400 height=300 pos-policy="center">
             <app-toolbar slot="header">
               hello world
@@ -46,6 +47,15 @@
             </div>
           </boo-window>
         </template>
+        <script>
+          window.onload = () => {
+            let btn = document.querySelector('#toggle');
+            btn.addEventListener('click', e => {
+              let win = document.querySelector('#boo');
+              win.opened = !win.opened;
+            });
+          }
+        </script>
       </demo-snippet>
     </div>
   </body>

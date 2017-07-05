@@ -101,6 +101,41 @@
       static get is() { return 'boo-window'; }
       static get properties() {
         return {
+          opened: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+            notify: true,
+            observer: '_openedChanged'
+          },
+          openAnimationConfig: {
+            type: Array,
+            value: [{
+              transform: 'scale(2.0, 2.0)',
+              opacity: 0
+            }, {
+              transform: 'scale(1.0, 1.0)',
+              opacity: 1
+            }]
+          },
+          closeAnimationConfig: {
+            type: Array,
+            value: [{
+              transform: 'scale(1.0, 1.0)',
+              opacity: 1
+            }, {
+              transform: 'scale(1.5, 1.5)',
+              opacity: 0
+            }]
+          },
+          openDuration: {
+            type: Number,
+            value: 100
+          },
+          closeDuration: {
+            type: Number,
+            value: 100
+          },
           // 从左上角为坐标原点的坐标系的横坐标
           x: {
             type: Number,
@@ -246,7 +281,7 @@
 
       _size() {
         if(this.style.display == 'none') {
-          console.warning('元素'+this.tagName+'没有显示，无法计算位置');
+          console.warn('元素'+this.tagName+'没有显示，无法计算位置');
         }
         return this.getBoundingClientRect();
       }
@@ -333,10 +368,10 @@
       }
 
       _posPolicyChanged(policy) {
-        let pos = {
-          x: 0,
-          y: 0
-        };
+        if (!this.opened) {
+          return;
+        }
+        let pos = { x: 0, y: 0 };
         switch(policy) {
           case POS_TOP_LEFT:
             pos = this.topLeft();
@@ -356,7 +391,7 @@
           case POS_RIGHT:
             pos = this.right();
             break;
-          case POS_BOTTOM_left:
+          case POS_BOTTOM_LEFT:
             pos = this.bottomLeft();
             break;
           case POS_BOTTOM:
@@ -368,6 +403,26 @@
         }
         this.x = pos.x;
         this.y = pos.y;
+      }
+
+      _openedChanged(opened, old) {
+        if (opened) {
+          this.style.display = 'block';
+          this._posPolicyChanged(this.posPolicy);
+          this.animate(this.openAnimationConfig, this.openDuration);
+          return;
+        }
+        if (old === undefined) {
+          this.style.display = 'none';
+          return;
+        }
+        let ani = this.animate(this.closeAnimationConfig, this.closeDuration);
+        ani.pause();
+        let _this = this;
+        ani.onfinish = () => {
+          _this.style.display = 'none';
+        };
+        ani.play();
       }
 
       static get screenWidth() {
