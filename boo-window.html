@@ -381,9 +381,6 @@
       }
 
       _posPolicyChanged(policy) {
-        if (!this.opened) {
-          return;
-        }
         let pos = { x: this.fixX, y: this.fixY };
         switch(policy) {
           case POS_TOP_LEFT:
@@ -421,12 +418,7 @@
       _openedChanged(opened, old) {
         if (opened) {
           this.style.display = 'block';
-          this._posPolicyChanged(this.posPolicy);
-          setTimeout(() => {
-            this.animate(
-              this.openAnimationConfig, this.openDuration
-            );
-          }, 0);
+          this.animate(this.openAnimationConfig, this.openDuration);
           return;
         }
         if (old === undefined) {
