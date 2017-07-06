@@ -8,6 +8,7 @@
         display: block;
         background-color: white;
         z-index: 100;
+        box-sizing: border-box;
       }
       .wrapper {
         width: 100%;
@@ -288,10 +289,10 @@
       }
 
       _size() {
-        if(this.style.display == 'none') {
-          console.warn('元素'+this.tagName+'没有显示，无法计算位置');
-        }
-        return this.getBoundingClientRect();
+        return {
+          width: this.width,
+          height: this.height
+        };
       }
 
       connectedCallback() {
