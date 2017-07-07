@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
 
 <dom-module id="boo-window">
   <template>
@@ -64,6 +65,9 @@
         right: 0px;
       }
     </style>
+    <iron-media-query 
+      query="(max-width: 767px)" 
+      query-matches="{{_smallScreen}}"></iron-media-query>
     <div class="wrapper">
       <a class="tl"></a>
       <a class="tr"></a>
@@ -209,6 +213,9 @@
             type: Number,
           },
           _beginCursorY: {
+            type: Number,
+          },
+          _smallScreen: {
             type: Number,
           },
           _resizeTrigger: {
@@ -370,6 +377,13 @@
       }
 
       _update() {
+        if (this._smallScreen) {
+          this.style.left = '0px';
+          this.style.top = '0px';
+          this.style.height = BooWindow.screenHeight + 'px';
+          this.style.width = BooWindow.screenWidth + 'px';
+          return;
+        }
         this.style.left = this.x + 'px';
         this.style.top = this.y + 'px';
         this.style.height = this.height + 'px';
