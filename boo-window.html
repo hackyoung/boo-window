@@ -430,9 +430,13 @@
       }
 
       _openedChanged(opened, old) {
+        let _this = this;
         if (opened) {
           this.style.display = 'block';
-          this.animate(this.openAnimationConfig, this.openDuration);
+          let ani = this.animate(this.openAnimationConfig, this.openDuration);
+          ani.onfinish = e => {
+            _this.dispatchEvent(new CustomEvent('window-opened'));
+          }
           return;
         }
         if (old === undefined) {
@@ -441,9 +445,9 @@
         }
         let ani = this.animate(this.closeAnimationConfig, this.closeDuration);
         ani.pause();
-        let _this = this;
         ani.onfinish = () => {
           _this.style.display = 'none';
+          _this.dispatchEvent(new CustomEvent('window-closed'));
         };
         ani.play();
       }

@@ -50,8 +50,14 @@
         <script>
           window.onload = () => {
             let btn = document.querySelector('#toggle');
+            let win = document.querySelector('#boo');
+            win.addEventListener('window-opened', e => {
+                console.log('opened');
+            });
+            win.addEventListener('window-closed', e => {
+                console.log('closed');
+            });
             btn.addEventListener('click', e => {
-              let win = document.querySelector('#boo');
               win.opened = !win.opened;
             });
           }
