@@ -355,6 +355,7 @@
         if (this._moving) {
           this.x = this._beginX + e.screenX - this._beginCursorX;
           this.y = this._beginY + e.screenY - this._beginCursorY;
+          this.dispatchEvent(new CustomEvent('move'));
         }
         if (!this._resizing) {
           return;
@@ -382,6 +383,7 @@
           this.height = this._beginHeight + y;
           this.width = this._beginWidth + x;
         }
+        this.dispatchEvent(new CustomEvent('resize'));
       }
 
       _update() {
