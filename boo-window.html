@@ -2,6 +2,7 @@
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../neon-animation/animations/transform-animation.html">
 <link rel="import" href="../neon-animation/web-animations.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 
@@ -126,9 +127,19 @@
                 entry: [{
                   name: 'fade-in-animation',
                   node: this
+                }, {
+                  name: 'transform-animation',
+                  transformFrom: 'translateY(-20px)',
+                  transformTo: 'none',
+                  node: this
                 }],
                 exit: [{
                   name: 'fade-out-animation',
+                  node: this
+                }, {
+                  name: 'transform-animation',
+                  transformFrom: 'none',
+                  transformTo: 'translateY(20px)',
                   node: this
                 }]
               };
