@@ -355,7 +355,6 @@
         if (this._moving) {
           this.x = this._beginX + e.screenX - this._beginCursorX;
           this.y = this._beginY + e.screenY - this._beginCursorY;
-          this.dispatchEvent(new CustomEvent('move'));
         }
         if (!this._resizing) {
           return;
@@ -383,7 +382,6 @@
           this.height = this._beginHeight + y;
           this.width = this._beginWidth + x;
         }
-        this.dispatchEvent(new CustomEvent('resize'));
       }
 
       _update() {
@@ -392,12 +390,14 @@
           this.style.top = '0px';
           this.style.height = BooWindow.screenHeight + 'px';
           this.style.width = BooWindow.screenWidth + 'px';
+          this.dispatchEvent(new CustomEvent('update'));
           return;
         }
         this.style.left = this.x + 'px';
         this.style.top = this.y + 'px';
         this.style.height = this.height + 'px';
         this.style.width = this.width + 'px';
+        this.dispatchEvent(new CustomEvent('update'));
       }
 
       update() {
