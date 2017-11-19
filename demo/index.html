@@ -33,10 +33,13 @@
       <demo-snippet>
         <template>
           <button id="toggle">开启/关闭</button>
-          <boo-window id="boo" width=400 height=300 pos-policy="bottom-right" fix-x="-20" fix-y="-20">
-            <app-toolbar slot="header">
+          <boo-window id="boo" width=400 height=300
+              pos-policy="bottom-right" fix-x="-20" fix-y="-20">
+
+            <app-toolbar slot="move-trigger">
               hello world
             </app-toolbar>
+
             <div slot="content">
               <p>
                 将鼠标放在四个角落可改变拖动改变大小
@@ -45,16 +48,17 @@
                 可用鼠标拖动蓝色区域拖放窗口
               </p>
             </div>
+
           </boo-window>
         </template>
         <script>
           window.onload = () => {
             let btn = document.querySelector('#toggle');
             let win = document.querySelector('#boo');
-            win.addEventListener('window-opened', e => {
+            win.addEventListener('opened', e => {
                 console.log('opened');
             });
-            win.addEventListener('window-closed', e => {
+            win.addEventListener('closed', e => {
                 console.log('closed');
             });
             btn.addEventListener('click', e => {

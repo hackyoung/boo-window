@@ -1,4 +1,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../neon-animation/web-animations.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 
 <dom-module id="boo-window">
@@ -69,13 +73,14 @@
       query="(max-width: 767px)" 
       query-matches="{{_smallScreen}}"></iron-media-query>
     <div class="wrapper">
-      <a class="tl"></a>
-      <a class="tr"></a>
-      <a class="bl"></a>
-      <a class="br"></a>
+      <a class="tl" on-mousedown="_onResizeTriggerMouseDown"></a>
+      <a class="tr" on-mousedown="_onResizeTriggerMouseDown"></a>
+      <a class="bl" on-mousedown="_onResizeTriggerMouseDown"></a>
+      <a class="br" on-mousedown="_onResizeTriggerMouseDown"></a>
       <div>
-        <div class="header">
-          <slot name="header"></slot>
+        <div id="move-trigger"
+          on-mousedown="_onMoveTriggerMouseDown">
+          <slot name="move-trigger"></slot>
         </div>
         <slot name="content"></slot>
       </div>
@@ -94,6 +99,7 @@
     const POS_BOTTOM = 'bottom';
     const POS_BOTTOM_RIGHT = 'bottom-right';
 
+    const BaseWindow = Polymer.mixinBehaviors([Polymer.NeonAnimationRunnerBehavior], Polymer.Element);
     /**
      * `boo-window`
      * 
@@ -102,7 +108,7 @@
      * @polymer
      * @demo demo/index.html
      */
-    class BooWindow extends Polymer.Element {
+    class BooWindow extends BaseWindow {
       static get is() { return 'boo-window'; }
       static get properties() {
         return {
@@ -113,33 +119,20 @@
             notify: true,
             observer: '_openedChanged'
           },
-          openAnimationConfig: {
-            type: Array,
-            value: [{
-              transform: 'scale(0.8, 0.8)',
-              opacity: 0
-            }, {
-              transform: 'scale(1, 1)',
-              opacity: 1
-            }]
-          },
-          closeAnimationConfig: {
-            type: Array,
-            value: [{
-              transform: 'scale(1, 1)',
-              opacity: 1
-            }, {
-              transform: 'scale(0.8, 0.8)',
-              opacity: 0
-            }]
-          },
-          openDuration: {
-            type: Number,
-            value: 100
-          },
-          closeDuration: {
-            type: Number,
-            value: 100
+          animationConfig: {
+            type: Object,
+            value: function() {
+              return {
+                entry: [{
+                  name: 'fade-in-animation',
+                  node: this
+                }],
+                exit: [{
+                  name: 'fade-out-animation',
+                  node: this
+                }]
+              };
+            }
           },
           // 从左上角为坐标原点的坐标系的横坐标
           x: {
@@ -203,24 +196,12 @@
             type: Boolean,
             value: false
           },
-          _beginX: {
-            type: Number,
-          },
-          _beginY: {
-            type: Number,
-          },
-          _beginCursorX: {
-            type: Number,
-          },
-          _beginCursorY: {
-            type: Number,
-          },
-          _smallScreen: {
-            type: Number,
-          },
-          _resizeTrigger: {
-            type: Object,
-          }
+          _beginX: Number,
+          _beginY: Number,
+          _beginCursorX: Number,
+          _beginCursorY: Number,
+          _smallScreen: Number,
+          _resizeTrigger: Object,
         };
       }
 
@@ -305,75 +286,91 @@
       connectedCallback() {
         super.connectedCallback();
         let _this = this;
-        let header = _this.shadowRoot.querySelector('div.header');
-        _this.shadowRoot.querySelectorAll('.wrapper>a').forEach(item => {
-          item.addEventListener('mousedown', e => {
-            if (_this.noResize) {
-              return;
-            }
-            _this._resizing = true;
-            _this._resizeTrigger = item;
-            _this._beginCursorX = e.screenX;
-            _this._beginCursorY = e.screenY;
-            _this._beginHeight = _this.height;
-            _this._beginWidth = _this.width;
-            _this._beginX = _this.x;
-            _this._beginY = _this.y;
-            let body = document.getElementsByTagName('body')[0];
-            body.style.userSelect = 'none';
-          });
-        });
-        header.addEventListener('mousedown', (e) => {
-          if (_this.noMove) {
-            return;
-          }
-          _this._moving = true;
-          _this._beginCursorX = e.screenX;
-          _this._beginCursorY = e.screenY;
-          _this._beginX = _this.x;
-          _this._beginY = _this.y;
-          header.style.cursor = 'move';
-          let body = document.getElementsByTagName('body')[0];
-          body.style.userSelect = 'none';
-        });
-        window.addEventListener('mouseup', () => {
-          _this._moving = false;
-          _this._resizing = false;
-          header.style.cursor = 'default';
-          let body = document.getElementsByTagName('body')[0];
-          body.style.userSelect = 'text';
-        });
-        window.addEventListener('mousemove', (e) => {
-          if (_this._moving) {
-            _this.x = _this._beginX + e.screenX - _this._beginCursorX;
-            _this.y = _this._beginY + e.screenY - _this._beginCursorY;
-          }
-          if (_this._resizing) {
-            let x = e.screenX - _this._beginCursorX;
-            let y = e.screenY - _this._beginCursorY;
-            let klass = _this._resizeTrigger.getAttribute('class').split(' ');
-            if (klass.indexOf('tl') != -1) {
-              _this.x = _this._beginX + x;
-              _this.y = _this._beginY + y;
-              _this.height = _this._beginHeight - y;
-              _this.width = _this._beginWidth - x;
-            }
-            if (klass.indexOf('tr') != -1) {
-              _this.y = _this._beginY + y;
-              _this.height = _this._beginHeight - y;
-              _this.width = _this._beginWidth + x;
-            }
-            if (klass.indexOf('bl') != -1) {
-              _this.x = _this._beginX + x;
-              _this.height = _this._beginHeight + y;
-              _this.width = _this._beginWidth - x;
-            }
-            if(klass.indexOf('br') != -1) {
-              _this.height = _this._beginHeight + y;
-              _this.width = _this._beginWidth + x;
-            }
-          }
-        });
+        window.addEventListener('mouseup', this._onWindowMouseUp.bind(this));
+        window.addEventListener('mousemove', this._onWindowMouseMove.bind(this));
+        this.addEventListener('neon-animation-finish', this._onAnimationFinish.bind(this));
+      }
+
+      _onAnimationFinish(e) {
+        if (!this.opened) {
+          this.style.display = 'none';
+          this.dispatchEvent(new CustomEvent('closed'));
+          return;
+        }
+        this.dispatchEvent(new CustomEvent('opened'));
+      }
+
+      _onResizeTriggerMouseDown(e) {
+        if (this.noResize) {
+          return;
+        }
+        this._resizing = true;
+        this._resizeTrigger = e.target;
+        this._beginCursorX = e.screenX;
+        this._beginCursorY = e.screenY;
+        this._beginHeight = this.height;
+        this._beginWidth = this.width;
+        this._beginX = this.x;
+        this._beginY = this.y;
+        let body = document.getElementsByTagName('body')[0];
+        body.style.userSelect = 'none';
+      }
+
+      _onMoveTriggerMouseDown(e) {
+        if (this.noMove) {
+          return;
+        }
+        let moveTrigger = this.shadowRoot.querySelector('#move-trigger');
+        this._moving = true;
+        this._beginCursorX = e.screenX;
+        this._beginCursorY = e.screenY;
+        this._beginX = this.x;
+        this._beginY = this.y;
+        moveTrigger.style.cursor = 'move';
+        let body = document.getElementsByTagName('body')[0];
+        body.style.userSelect = 'none';
+      }
+
+      _onWindowMouseUp(e) {
+        let moveTrigger = this.shadowRoot.querySelector('#move-trigger');
+        this._moving = false;
+        this._resizing = false;
+        moveTrigger.style.cursor = 'default';
+        let body = document.getElementsByTagName('body')[0];
+        body.style.userSelect = 'text';
+      }
+
+      _onWindowMouseMove(e) {
+        if (this._moving) {
+          this.x = this._beginX + e.screenX - this._beginCursorX;
+          this.y = this._beginY + e.screenY - this._beginCursorY;
+        }
+        if (!this._resizing) {
+          return;
+        }
+        let x = e.screenX - this._beginCursorX;
+        let y = e.screenY - this._beginCursorY;
+        let klass = this._resizeTrigger.getAttribute('class').split(' ');
+        if (klass.indexOf('tl') != -1) {
+          this.x = this._beginX + x;
+          this.y = this._beginY + y;
+          this.height = this._beginHeight - y;
+          this.width = this._beginWidth - x;
+        }
+        if (klass.indexOf('tr') != -1) {
+          this.y = this._beginY + y;
+          this.height = this._beginHeight - y;
+          this.width = this._beginWidth + x;
+        }
+        if (klass.indexOf('bl') != -1) {
+          this.x = this._beginX + x;
+          this.height = this._beginHeight + y;
+          this.width = this._beginWidth - x;
+        }
+        if(klass.indexOf('br') != -1) {
+          this.height = this._beginHeight + y;
+          this.width = this._beginWidth + x;
+        }
       }
 
       _update() {
@@ -433,23 +430,14 @@
         let _this = this;
         if (opened) {
           this.style.display = 'block';
-          let ani = this.animate(this.openAnimationConfig, this.openDuration);
-          ani.onfinish = e => {
-            _this.dispatchEvent(new CustomEvent('window-opened'));
-          }
+          this.playAnimation('entry');
           return;
         }
         if (old === undefined) {
           this.style.display = 'none';
           return;
         }
-        let ani = this.animate(this.closeAnimationConfig, this.closeDuration);
-        ani.pause();
-        ani.onfinish = () => {
-          _this.style.display = 'none';
-          _this.dispatchEvent(new CustomEvent('window-closed'));
-        };
-        ani.play();
+        this.playAnimation('exit');
       }
 
       static get screenWidth() {
