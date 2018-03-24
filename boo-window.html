@@ -415,6 +415,8 @@
         if (this._smallScreen) {
           this.style.left = '0px';
           this.style.top = '0px';
+          this.height = BooWindow.screenHeight;
+          this.width = BooWindow.screenWidth;
           this.style.height = BooWindow.screenHeight + 'px';
           this.style.width = BooWindow.screenWidth + 'px';
           this.dispatchEvent(new CustomEvent('update'));
