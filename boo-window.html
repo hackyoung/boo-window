@@ -168,7 +168,6 @@
           // 窗口高度，包括header-bar
           height: {
             type: Number,
-            value: 200,
             reflectToAttribute: true,
             observer: '_update',
             notify: true
@@ -293,7 +292,14 @@
 
       computeHeight() {
         let wrapper = this.shadowRoot.querySelector('.wrapper');
+        // let display = wrapper.style.display;
+        // let visibility = wrapper.style.visibility;
+        // wrapper.style.display = "block";
+        // wrapper.style.visibility = "hidden";
         var rect = wrapper.getBoundingClientRect();
+        // console.log(rect);
+        // wrapper.style.display = display;
+        // wrapper.style.visibility = visibility;
         return rect.height;
       }
 
@@ -317,9 +323,6 @@
           this.style.display = 'none';
           this.dispatchEvent(new CustomEvent('closed'));
           return;
-        }
-        if (this.autoComputeHeight) {
-          this.height = this.computeHeight();
         }
         this.dispatchEvent(new CustomEvent('opened'));
       }
@@ -456,6 +459,10 @@
         let _this = this;
         if (opened) {
           this.style.display = 'block';
+          if (this.autoComputeHeight) {
+            this.height = this.computeHeight();
+            this.update();
+          }
           this.playAnimation('entry');
           return;
         }
