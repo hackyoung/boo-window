@@ -83,7 +83,9 @@
           on-mousedown="_onMoveTriggerMouseDown">
           <slot name="move-trigger"></slot>
         </div>
-        <slot name="content"></slot>
+        <div id="content">
+          <slot name="content"></slot>
+        </div>
       </div>
     </div>
   </template>
@@ -291,16 +293,17 @@
       }
 
       computeHeight() {
-        let wrapper = this.shadowRoot.querySelector('.wrapper');
-        // let display = wrapper.style.display;
-        // let visibility = wrapper.style.visibility;
-        // wrapper.style.display = "block";
-        // wrapper.style.visibility = "hidden";
-        var rect = wrapper.getBoundingClientRect();
-        // console.log(rect);
-        // wrapper.style.display = display;
-        // wrapper.style.visibility = visibility;
-        return rect.height;
+        let trigger = this.shadowRoot.querySelector('#move-trigger');
+        let triggerRect = trigger.getBoundingClientRect();
+        let content = this.shadowRoot.querySelector('#content');
+        let contentRect = content.getBoundingClientRect();
+
+        return triggerRect.height + contentRect.height;
+      }
+
+      assignHeight() {
+        this.height = this.computeHeight();
+        this.update();
       }
 
       _size() {
