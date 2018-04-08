@@ -145,6 +145,10 @@
               };
             }
           },
+          autoComputeHeight: {
+            type: Boolean,
+            value: true
+          },
           // 从左上角为坐标原点的坐标系的横坐标
           x: {
             type: Number,
@@ -287,6 +291,12 @@
         };
       }
 
+      computeHeight() {
+        let wrapper = this.shadowRoot.querySelector('.wrapper');
+        var rect = wrapper.getBoundingClientRect();
+        return rect.height;
+      }
+
       _size() {
         return {
           width: this.width,
@@ -307,6 +317,9 @@
           this.style.display = 'none';
           this.dispatchEvent(new CustomEvent('closed'));
           return;
+        }
+        if (this.autoComputeHeight) {
+          this.height = this.computeHeight();
         }
         this.dispatchEvent(new CustomEvent('opened'));
       }
