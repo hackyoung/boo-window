@@ -363,8 +363,14 @@
 
       _onWindowMouseUp(e) {
         let moveTrigger = this.shadowRoot.querySelector('#move-trigger');
-        this._moving = false;
-        this._resizing = false;
+        if (this._moving) {
+          this._moving = false;
+          this.dispatchEvent(new CustomEvent('moved'));
+        }
+        if (this._resizing) {
+          this._resizing = false;
+          this.dispatchEvent(new CustomEvent('resized'));
+        }
         moveTrigger.style.cursor = 'default';
         let body = document.getElementsByTagName('body')[0];
         body.style.userSelect = 'text';
@@ -374,6 +380,7 @@
         if (this._moving) {
           this.x = this._beginX + e.screenX - this._beginCursorX;
           this.y = this._beginY + e.screenY - this._beginCursorY;
+          this.dispatchEvent(new CustomEvent('moving'));
         }
         if (!this._resizing) {
           return;
@@ -401,6 +408,7 @@
           this.height = this._beginHeight + y;
           this.width = this._beginWidth + x;
         }
+        this.dispatchEvent(new CustomEvent('resizing'));
       }
 
       _update() {
