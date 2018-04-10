@@ -78,7 +78,6 @@
         height: 100vh;
         @apply --boo-window-shadow;
         position: fixed;
-        display: none;
       }
     </style>
     <div class="shadow"></div>
@@ -140,31 +139,7 @@
             value: false,
             abserver: '_noShadowChanged'
           },
-          animationConfig: {
-            type: Object,
-            value: function() {
-              return {
-                entry: [{
-                  name: 'fade-in-animation',
-                  node: this
-                }, {
-                  name: 'transform-animation',
-                  transformFrom: 'translateY(-20px)',
-                  transformTo: 'none',
-                  node: this
-                }],
-                exit: [{
-                  name: 'fade-out-animation',
-                  node: this
-                }, {
-                  name: 'transform-animation',
-                  transformFrom: 'none',
-                  transformTo: 'translateY(20px)',
-                  node: this
-                }]
-              };
-            }
-          },
+          animationConfig: Object,
           autoComputeHeight: {
             type: Boolean,
             value: true
@@ -338,6 +313,27 @@
         window.addEventListener('mouseup', this._onWindowMouseUp.bind(this));
         window.addEventListener('mousemove', this._onWindowMouseMove.bind(this));
         this.addEventListener('neon-animation-finish', this._onAnimationFinish.bind(this));
+        let wrapper = this.shadowRoot.querySelector('.wrapper');
+        this.animationConfig = {
+          entry: [{
+            name: 'fade-in-animation',
+            node: wrapper
+          }, {
+            name: 'transform-animation',
+            transformFrom: 'translateY(-20px)',
+            transformTo: 'none',
+            node: wrapper
+          }],
+          exit: [{
+            name: 'fade-out-animation',
+            node: wrapper
+          }, {
+            name: 'transform-animation',
+            transformFrom: 'none',
+            transformTo: 'translateY(20px)',
+            node: wrapper
+          }]
+        };
       }
 
       _onAnimationFinish(e) {
@@ -502,9 +498,9 @@
 
       _openedChanged(opened, old) {
         let _this = this;
-        if (this.shadow && !this.noShadow) {
-          this.shadow.style.display = opened ? 'block' : 'none';
-        }
+        // if (this.shadow && !this.noShadow) {
+        //   this.shadow.style.display = opened ? 'block' : 'none';
+        // }
         if (opened) {
           this.style.display = 'block';
           if (this.autoComputeHeight) {
