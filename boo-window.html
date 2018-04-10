@@ -69,7 +69,19 @@
         bottom: 0px;
         right: 0px;
       }
+      .shadow {
+        opacity: 0.4;
+        background-color: white;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100vh;
+        @apply --boo-window-shadow;
+        position: fixed;
+        display: none;
+      }
     </style>
+    <div class="shadow"></div>
     <iron-media-query 
       query="(max-width: 767px)" 
       query-matches="{{_smallScreen}}"></iron-media-query>
@@ -121,6 +133,12 @@
             reflectToAttribute: true,
             notify: true,
             observer: '_openedChanged'
+          },
+          noShadow: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false,
+            abserver: '_noShadowChanged'
           },
           animationConfig: {
             type: Object,
@@ -316,6 +334,7 @@
       connectedCallback() {
         super.connectedCallback();
         let _this = this;
+        this.shadow = this.shadowRoot.querySelector('.shadow');
         window.addEventListener('mouseup', this._onWindowMouseUp.bind(this));
         window.addEventListener('mousemove', this._onWindowMouseMove.bind(this));
         this.addEventListener('neon-animation-finish', this._onAnimationFinish.bind(this));
@@ -328,6 +347,19 @@
           return;
         }
         this.dispatchEvent(new CustomEvent('opened'));
+      }
+
+      _noShadowChanged(noShadow) {
+        console.log(1);
+        if (!this.opened) {
+          return;
+        }
+        console.log(2);
+        if (!this.shadow) {
+          return;
+        }
+        console.log(3);
+        this.shadow.style.display = noShadow ? 'none' : 'block';
       }
 
       _onResizeTriggerMouseDown(e) {
@@ -470,6 +502,9 @@
 
       _openedChanged(opened, old) {
         let _this = this;
+        if (this.shadow && !this.noShadow) {
+          this.shadow.style.display = opened ? 'block' : none;
+        }
         if (opened) {
           this.style.display = 'block';
           if (this.autoComputeHeight) {
