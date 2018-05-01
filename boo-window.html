@@ -69,7 +69,7 @@
         bottom: 0px;
         right: 0px;
       }
-      .shadow {
+      #shadow {
         opacity: 0.4;
         background-color: white;
         top: 0px;
@@ -80,7 +80,7 @@
         position: fixed;
       }
     </style>
-    <div class="shadow"></div>
+    <div id="shadow"></div>
     <iron-media-query 
       query="(max-width: 767px)" 
       query-matches="{{_smallScreen}}"></iron-media-query>
@@ -138,6 +138,10 @@
             reflectToAttribute: true,
             value: false,
             abserver: '_noShadowChanged'
+          },
+          noSmallScreen: {
+            type: Boolean,
+            value: false
           },
           animationConfig: Object,
           autoComputeHeight: {
@@ -308,8 +312,6 @@
 
       connectedCallback() {
         super.connectedCallback();
-        let _this = this;
-        this.shadow = this.shadowRoot.querySelector('.shadow');
         window.addEventListener('mouseup', this._onWindowMouseUp.bind(this));
         window.addEventListener('mousemove', this._onWindowMouseMove.bind(this));
         this.addEventListener('neon-animation-finish', this._onAnimationFinish.bind(this));
@@ -346,16 +348,10 @@
       }
 
       _noShadowChanged(noShadow) {
-        console.log(1);
         if (!this.opened) {
           return;
         }
-        console.log(2);
-        if (!this.shadow) {
-          return;
-        }
-        console.log(3);
-        this.shadow.style.display = noShadow ? 'none' : 'block';
+        this.$.shadow.style.display = noShadow ? 'none' : 'block';
       }
 
       _onResizeTriggerMouseDown(e) {
@@ -440,7 +436,7 @@
       }
 
       _update() {
-        if (this._smallScreen) {
+        if (this._smallScreen && !this.noSmallScreen) {
           this.style.left = '0px';
           this.style.top = '0px';
           this.height = BooWindow.screenHeight;
@@ -497,10 +493,7 @@
       }
 
       _openedChanged(opened, old) {
-        let _this = this;
-        // if (this.shadow && !this.noShadow) {
-        //   this.shadow.style.display = opened ? 'block' : 'none';
-        // }
+        this.$.shadow.style.display = opened && !this.noShadow ? 'block' : 'none';
         if (opened) {
           this.style.display = 'block';
           if (this.autoComputeHeight) {

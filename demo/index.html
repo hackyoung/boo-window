@@ -34,7 +34,7 @@
         <template>
           <button id="toggle">开启/关闭</button>
           <boo-window id="boo" width=400
-              no-shadow
+              no-small-screen
               pos-policy="bottom-right" fix-x="-20" fix-y="-20">
 
             <app-toolbar slot="move-trigger">
@@ -68,9 +68,7 @@
               win.opened = !win.opened;
             });
             shadow.addEventListener('click', e => {
-              console.log('hhhh');
               win.noShadow = !win.noShadow;
-              console.log(win.noShadow);
             });
           }
         </script>
