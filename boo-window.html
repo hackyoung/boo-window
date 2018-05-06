@@ -12,11 +12,12 @@
       :host {
         position: fixed;
         display: block;
-        background-color: white;
         z-index: 100;
         box-sizing: border-box;
       }
       .wrapper {
+        background-color: white;
+        @apply --boo-window-container;
         width: 100%;
         height: 100%;
         overflow: hidden;
@@ -83,7 +84,7 @@
     <div id="shadow"></div>
     <iron-media-query 
       query="(max-width: 767px)" 
-      query-matches="{{_smallScreen}}"></iron-media-query>
+      query-matches="{{smallScreen}}"></iron-media-query>
     <div class="wrapper">
       <a class="tl" on-mousedown="_onResizeTriggerMouseDown"></a>
       <a class="tr" on-mousedown="_onResizeTriggerMouseDown"></a>
@@ -213,7 +214,7 @@
           _beginY: Number,
           _beginCursorX: Number,
           _beginCursorY: Number,
-          _smallScreen: Number,
+          smallScreen: Number,
           _resizeTrigger: Object,
         };
       }
@@ -305,8 +306,8 @@
 
       _size() {
         return {
-          width: this.width,
-          height: this.height
+          width: Math.min(this.width, BooWindow.screenWidth),
+          height: Math.min(this.height, BooWindow.screenHeight)
         };
       }
 
@@ -436,7 +437,7 @@
       }
 
       _update() {
-        if (this._smallScreen && !this.noSmallScreen) {
+        if (this.smallScreen && !this.noSmallScreen) {
           this.style.left = '0px';
           this.style.top = '0px';
           this.height = BooWindow.screenHeight;
@@ -448,8 +449,8 @@
         }
         this.style.left = this.x + 'px';
         this.style.top = this.y + 'px';
-        this.style.height = this.height + 'px';
-        this.style.width = this.width + 'px';
+        this.style.height = Math.min(this.height, BooWindow.screenHeight) + 'px';
+        this.style.width = Math.min(this.width, BooWindow.screenWidth) + 'px';
         this.dispatchEvent(new CustomEvent('update'));
       }
 
