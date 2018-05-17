@@ -6,43 +6,67 @@
 
     <title>boo-window demo</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../paper-styles/element-styles/paper-material-styles.html">
-    <link rel="import" href="../../app-layout/app-header/app-header.html">
-    <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
-    <link rel="import" href="../boo-window.html">
+    <script src="../node_modules/web-animations-js/web-animations-next-lite.min.js"></script>
 
-    <custom-style>
+    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script type="module" src="../node_modules/@polymer/paper-styles/element-styles/paper-material-styles.js"></script>
+    <script type="module" src="../node_modules/@polymer/app-layout/app-header/app-header.js"></script>
+    <script type="module" src="../node_modules/@polymer/app-layout/app-toolbar/app-toolbar.js"></script>
+    <script type="module" src="../boo-window.js"></script>
+
+    <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('div');
+
+$_documentContainer.innerHTML = `<custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
         boo-window {
           @apply --shadow-elevation-16dp;
+        }
+        [slot=content] {
+          min-height: 400px; 
         }
         app-toolbar {
           color: #fff;
           background-color: #4285f4;
         }
       </style>
-    </custom-style>
+    </custom-style>`;
+
+document.body.appendChild($_documentContainer);
+</script>
   </head>
   <body>
-    <div class="vertical-section-container centered">
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
       <h3>Basic boo-window demo</h3>
       <demo-snippet>
         <template>
-          <button id="toggle">开启/关闭</button>
-          <boo-window id="boo" width=400
-              no-small-screen
-              pos-policy="bottom-right" fix-x="-20" fix-y="-20">
+          <boo-window 
+            id="boo" 
+            opened
+            width="400" 
+            no-shadow 
+            no-small-screen 
+            pos-policy="bottom-right" fix-x="-20" fix-y="-20">
 
             <app-toolbar slot="move-trigger">
               hello world
             </app-toolbar>
 
             <div slot="content">
-              <button id="no-shadow">遮兆开关</button>
               <p>
                 将鼠标放在四个角落可改变拖动改变大小
               </p>
@@ -53,26 +77,11 @@
 
           </boo-window>
         </template>
-        <script>
-          window.onload = () => {
-            let btn = document.querySelector('#toggle');
-            let win = document.querySelector('#boo');
-            let shadow = document.querySelector('#no-shadow');
-            win.addEventListener('opened', e => {
-                console.log('opened');
-            });
-            win.addEventListener('closed', e => {
-                console.log('closed');
-            });
-            btn.addEventListener('click', e => {
-              win.opened = !win.opened;
-            });
-            shadow.addEventListener('click', e => {
-              win.noShadow = !win.noShadow;
-            });
-          }
-        </script>
       </demo-snippet>
-    </div>
+    </div>`;
+
+    document.body.appendChild($_documentContainer.content);
+
+    </script>
   </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "name": "boo-window",
+  "flat": true,
+  "version": "0.0.1",
+  "main": "boo-window.js",
+  "dependencies": {
+    "@polymer/neon-animation": "^3.0.0-pre.18",
+    "@polymer/polymer": "^3.0.0",
+    "web-animations-js": "^2.3.1",
+    "@webcomponents/webcomponentsjs": "2.0.0-beta.2"
+  },
+  "devDependencies": {
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+    "@polymer/paper-styles": "^3.0.0-pre.18",
+    "@polymer/app-layout": "^3.0.0-pre.18"
+  }
+}
