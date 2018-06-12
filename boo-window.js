@@ -314,7 +314,7 @@ export class BooWindow extends BaseWindow {
     if (/vh$/.test(this.height) || /%$/.test(this.height)) {
       return BooWindow.screenHeight * parseFloat(this.height) / 100;
     }
-    return this.height;
+    return parseFloat(this.height);
   }
 
   _width() {
@@ -324,7 +324,7 @@ export class BooWindow extends BaseWindow {
     if (/vw$/.test(this.width) || /%$/.test(this.width)) {
       return BooWindow.screenWidth * parseFloat(this.width) / 100;
     }
-    return this.width;
+    return parseFloat(this.width);
   }
 
   connectedCallback() {
