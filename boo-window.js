@@ -25,7 +25,7 @@ const BaseWindow = mixinBehaviors([NeonAnimationRunnerBehavior], PolymerElement)
  * @polymer
  * @demo demo/index.html
  */
-class BooWindow extends BaseWindow {
+export class BooWindow extends BaseWindow {
   static get template() {
     return html`
     <style>
@@ -163,15 +163,15 @@ class BooWindow extends BaseWindow {
       },
       // 窗口高度，包括header-bar
       height: {
-        type: Number,
+        type: String,
         reflectToAttribute: true,
         observer: '_update',
         notify: true
       },
       // 窗口宽度
       width: {
-        type: Number,
-        value: 200,
+        type: String,
+        value: "200",
         reflectToAttribute: true,
         observer: '_update',
         notify: true
@@ -302,9 +302,33 @@ class BooWindow extends BaseWindow {
 
   _size() {
     return {
-      width: Math.min(this.width, BooWindow.screenWidth),
-      height: Math.min(this.height, BooWindow.screenHeight)
+      width: Math.min(this._width(), BooWindow.screenWidth),
+      height: Math.min(this._height(), BooWindow.screenHeight)
     };
+  }
+
+  _height() {
+    if (/px$/.test(this.height)) {
+      return parseFloat(this.height);
+    }
+    if (/vh$/.test(this.height) || /%$/.test(this.height)) {
+      return BooWindow.screenHeight * parseFloat(this.height) / 100;
+    }
+    return parseFloat(this.height);
+  }
+
+  _width() {
+    if (/px$/.test(this.width)) {
+      return parseFloat(this.width);
+    }
+    if (/vw$/.test(this.width) || /%$/.test(this.width)) {
+      return BooWindow.screenWidth * parseFloat(this.width) / 100;
+    }
+    return parseFloat(this.width);
+  }
+
+  wrapper() {
+    return this.shadowRoot.querySelector('.wrapper');
   }
 
   connectedCallback() {
@@ -359,8 +383,8 @@ class BooWindow extends BaseWindow {
     this._resizeTrigger = e.target;
     this._beginCursorX = e.screenX;
     this._beginCursorY = e.screenY;
-    this._beginHeight = this.height;
-    this._beginWidth = this.width;
+    this._beginHeight = this._height();
+    this._beginWidth = this._width();
     this._beginX = this.x;
     this._beginY = this.y;
     let body = document.getElementsByTagName('body')[0];
@@ -445,8 +469,8 @@ class BooWindow extends BaseWindow {
     }
     this.style.left = this.x + 'px';
     this.style.top = this.y + 'px';
-    this.style.height = Math.min(this.height, BooWindow.screenHeight) + 'px';
-    this.style.width = Math.min(this.width, BooWindow.screenWidth) + 'px';
+    this.style.height = Math.min(this._height(), BooWindow.screenHeight) + 'px';
+    this.style.width = Math.min(this._width(), BooWindow.screenWidth) + 'px';
     this.dispatchEvent(new CustomEvent('update'));
   }
 
