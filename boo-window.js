@@ -327,6 +327,10 @@ export class BooWindow extends BaseWindow {
     return parseFloat(this.width);
   }
 
+  wrapper() {
+    return this.shadowRoot.querySelector('.wrapper');
+  }
+
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener('mouseup', this._onWindowMouseUp.bind(this));
