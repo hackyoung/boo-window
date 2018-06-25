@@ -7,14 +7,16 @@
     <title>boo-window demo</title>
 
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-
     <script src="../node_modules/web-animations-js/web-animations-next-lite.min.js"></script>
 
-    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
-    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
-    <script type="module" src="../node_modules/@polymer/paper-styles/element-styles/paper-material-styles.js"></script>
-    <script type="module" src="../node_modules/@polymer/app-layout/app-header/app-header.js"></script>
-    <script type="module" src="../node_modules/@polymer/app-layout/app-toolbar/app-toolbar.js"></script>
+    <script type="module">
+      import "@polymer/iron-demo-helpers/demo-pages-shared-styles.js";
+      import "@polymer/iron-demo-helpers/demo-snippet.js";
+      import "@polymer/paper-styles/element-styles/paper-material-styles.js";
+      import "@polymer/app-layout/app-header/app-header.js";
+      import "@polymer/app-layout/app-toolbar/app-toolbar.js";
+    </script>
+
     <script type="module" src="../boo-window.js"></script>
 
     <!-- FIXME(polymer-modulizer):
