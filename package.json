@@ -1,17 +1,17 @@
 {
   "name": "boo-window",
   "flat": true,
-  "version": "0.0.7",
+  "version": "0.0.8",
   "main": "boo-window.js",
   "dependencies": {
-    "@polymer/neon-animation": "^3.0.0-pre.19",
+    "@polymer/neon-animation": "^3.0.0-pre.21",
     "@polymer/polymer": "^3.0.0",
     "web-animations-js": "^2.3.1",
     "@webcomponents/webcomponentsjs": "2.0.0-beta.2"
   },
   "devDependencies": {
-    "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
-    "@polymer/paper-styles": "^3.0.0-pre.19",
-    "@polymer/app-layout": "^3.0.0-pre.19"
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.21",
+    "@polymer/paper-styles": "^3.0.0-pre.21",
+    "@polymer/app-layout": "^3.0.0-pre.21"
   }
 }
