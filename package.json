@@ -1,7 +1,7 @@
 {
   "name": "boo-window",
   "flat": true,
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "boo-window.js",
   "dependencies": {
     "@polymer/neon-animation": "^3.0.0-pre.21",

@@ -37,16 +37,16 @@ export class BooWindow extends BaseWindow {
       }
       .wrapper {
         background-color: white;
+        overflow: hidden;
         @apply --boo-window-container;
         width: 100%;
         height: 100%;
-        overflow: hidden;
         position: relative;
       }
       .wrapper>div {
         width: 100%;
         height: 100%;
-        overflow: auto;
+        @apply --boo-window;
       }
       .wrapper>a {
         position: absolute;
