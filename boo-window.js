@@ -479,6 +479,9 @@ export class BooWindow extends BaseWindow {
   }
 
   _posPolicyChanged(policy) {
+    if (!this.opened) {
+      return;
+    }
     let pos = { x: this.fixX, y: this.fixY };
     switch(policy) {
       case POS_TOP_LEFT:
@@ -517,6 +520,7 @@ export class BooWindow extends BaseWindow {
     this.$.shadow.style.display = opened && !this.noShadow ? 'block' : 'none';
     if (opened) {
       this.style.display = 'block';
+      this.update();
       this.playAnimation('entry');
       return;
     }
