@@ -142,10 +142,6 @@ export class BooWindow extends BaseWindow {
         value: false
       },
       animationConfig: Object,
-      autoComputeHeight: {
-        type: Boolean,
-        value: true
-      },
       // 从左上角为坐标原点的坐标系的横坐标
       x: {
         type: Number,
@@ -217,7 +213,7 @@ export class BooWindow extends BaseWindow {
   }
 
   center() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: (BooWindow.screenWidth - rect.width) / 2 + this.fixX,
       y: (BooWindow.screenHeight - rect.height) / 2 + this.fixY
@@ -232,7 +228,7 @@ export class BooWindow extends BaseWindow {
   }
 
   top() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: (BooWindow.screenWidth - rect.width) / 2 + this.fixX,
       y: this.fixY
@@ -240,7 +236,7 @@ export class BooWindow extends BaseWindow {
   }
 
   topRight() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: BooWindow.screenWidth - rect.width + this.fixX,
       y: this.fixY
@@ -248,7 +244,7 @@ export class BooWindow extends BaseWindow {
   }
 
   left() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: this.fixX,
       y: (BooWindow.screenHeight - rect.height) / 2 + this.fixY,
@@ -256,7 +252,7 @@ export class BooWindow extends BaseWindow {
   }
 
   right() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: BooWindow.screenWidth - rect.width + this.fixX,
       y: (BooWindow.screenHeight - rect.height) / 2 + this.fixY,
@@ -264,7 +260,7 @@ export class BooWindow extends BaseWindow {
   }
 
   bottomLeft() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: this.fixX,
       y: BooWindow.screenHeight - rect.height + this.fixY,
@@ -272,7 +268,7 @@ export class BooWindow extends BaseWindow {
   }
 
   bottom() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: (BooWindow.screenWidth - rect.width) / 2 + this.fixX,
       y: BooWindow.screenHeight - rect.height + this.fixY,
@@ -280,7 +276,7 @@ export class BooWindow extends BaseWindow {
   }
 
   bottomRight() {
-    let rect = this._size();
+    let rect = this.size();
     return {
       x: BooWindow.screenWidth - rect.width + this.fixX,
       y: BooWindow.screenHeight - rect.height + this.fixY,
@@ -301,7 +297,7 @@ export class BooWindow extends BaseWindow {
     this.update();
   }
 
-  _size() {
+  size() {
     return {
       width: Math.min(this._width(), BooWindow.screenWidth),
       height: Math.min(this._height(), BooWindow.screenHeight)
@@ -309,6 +305,9 @@ export class BooWindow extends BaseWindow {
   }
 
   _height() {
+    if (!this.height) {
+      return parseFloat(this.computeHeight());
+    }
     if (/px$/.test(this.height)) {
       return parseFloat(this.height);
     }
@@ -518,10 +517,6 @@ export class BooWindow extends BaseWindow {
     this.$.shadow.style.display = opened && !this.noShadow ? 'block' : 'none';
     if (opened) {
       this.style.display = 'block';
-      if (this.autoComputeHeight) {
-        this.height = this.computeHeight();
-        this.update();
-      }
       this.playAnimation('entry');
       return;
     }
