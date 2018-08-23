@@ -173,6 +173,10 @@ export class BooWindow extends BaseWindow {
         observer: '_update',
         notify: true
       },
+      maxHeight: Number,
+      maxWidth: Number,
+      minWidth: Number,
+      minHeight: Number,
       noResize: {
         type: Boolean,
         value: false,
@@ -299,32 +303,40 @@ export class BooWindow extends BaseWindow {
 
   size() {
     return {
-      width: Math.min(this._width(), BooWindow.screenWidth),
-      height: Math.min(this._height(), BooWindow.screenHeight)
+      width: this._width(),
+      height: this._height()
     };
   }
 
   _height() {
+    let h = 0;
     if (!this.height) {
-      return parseFloat(this.computeHeight());
+      h = this.computeHeight();
+    } else if (/px$/.test(this.height)) {
+      h = parseFloat(this.height);
+    } else if (/vh$/.test(this.height) || /%$/.test(this.height)) {
+      h = BooWindow.screenHeight * parseFloat(this.height) / 100;
+    } else {
+      h = parseFloat(this.height);
     }
-    if (/px$/.test(this.height)) {
-      return parseFloat(this.height);
-    }
-    if (/vh$/.test(this.height) || /%$/.test(this.height)) {
-      return BooWindow.screenHeight * parseFloat(this.height) / 100;
-    }
-    return parseFloat(this.height);
+    return this._sureRange(this.maxHeight || BooWindow.screenHeight, this.minHeight || 0, h);
   }
 
   _width() {
+    let w = 0;
     if (/px$/.test(this.width)) {
-      return parseFloat(this.width);
+      w = parseFloat(this.width);
+    } else if (/vw$/.test(this.width) || /%$/.test(this.width)) {
+      w = BooWindow.screenWidth * parseFloat(this.width) / 100;
+    } else {
+      w = parseFloat(this.width);
     }
-    if (/vw$/.test(this.width) || /%$/.test(this.width)) {
-      return BooWindow.screenWidth * parseFloat(this.width) / 100;
-    }
-    return parseFloat(this.width);
+
+    return this._sureRange(this.maxWidth || BooWindow.screenWidth, this.minWidth || 0, w);
+  }
+
+  _sureRange(max, min, num) {
+    return parseFloat(Math.max(Math.min(max, num), min));
   }
 
   wrapper() {
@@ -433,25 +445,34 @@ export class BooWindow extends BaseWindow {
     let x = e.screenX - this._beginCursorX;
     let y = e.screenY - this._beginCursorY;
     let klass = this._resizeTrigger.getAttribute('class').split(' ');
+    let maxHeight = this.maxHeight || BooWindow.screenHeight;
+    let maxWidth = this.maxWidth || BooWindow.screenWidth;
+    let minHeight = this.minHeight || 0;
+    let minWidth = this.minWidth || 0;
     if (klass.indexOf('tl') != -1) {
-      this.x = this._beginX + x;
-      this.y = this._beginY + y;
-      this.height = this._beginHeight - y;
-      this.width = this._beginWidth - x;
-    }
-    if (klass.indexOf('tr') != -1) {
-      this.y = this._beginY + y;
-      this.height = this._beginHeight - y;
-      this.width = this._beginWidth + x;
-    }
-    if (klass.indexOf('bl') != -1) {
-      this.x = this._beginX + x;
-      this.height = this._beginHeight + y;
-      this.width = this._beginWidth - x;
-    }
-    if(klass.indexOf('br') != -1) {
-      this.height = this._beginHeight + y;
-      this.width = this._beginWidth + x;
+      this.height = this._sureRange(maxHeight, minHeight, this._beginHeight - y);
+      if (this.height < maxHeight && this.height > minHeight) {
+        this.y = this._beginY + y;
+      }
+      this.width = this._sureRange(maxWidth, minWidth, this._beginWidth - x);
+      if (this.width < maxWidth && this.width > minWidth) {
+        this.x = this._beginX + x;
+      }
+    } else if (klass.indexOf('tr') != -1) {
+      this.width = this._sureRange(maxWidth, minWidth, this._beginWidth + x);
+      this.height = this._sureRange(maxHeight, minHeight, this._beginHeight - y);
+      if (this.height < maxHeight && this.height > minHeight) {
+        this.y = this._beginY + y;
+      }
+    } else if (klass.indexOf('bl') != -1) {
+      this.width = this._sureRange(maxWidth, minWidth, this._beginWidth - x);
+      this.height = this._sureRange(maxHeight, minHeight, this._beginHeight + y);
+      if (this.width < maxWidth && this.width > minWidth) {
+        this.x = this._beginX + x;
+      }
+    } else if(klass.indexOf('br') != -1) {
+      this.width = this._sureRange(maxWidth, minWidth, this._beginWidth + x);
+      this.height = this._sureRange(maxHeight, minHeight, this._beginHeight + y);
     }
     this.dispatchEvent(new CustomEvent('resizing'));
   }
