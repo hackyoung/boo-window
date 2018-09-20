@@ -211,7 +211,10 @@ export class BooWindow extends BaseWindow {
       _beginY: Number,
       _beginCursorX: Number,
       _beginCursorY: Number,
-      smallScreen: Number,
+      smallScreen: {
+        type: Number,
+        reflectToAttribute: true,
+      },
       _resizeTrigger: Object,
     };
   }
