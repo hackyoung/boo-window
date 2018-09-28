@@ -1,7 +1,7 @@
 {
   "name": "boo-window",
   "flat": true,
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "a layer with resize and move",
   "repository": "https://github.com/hackyoung/boo-window",
   "license": "MIT",

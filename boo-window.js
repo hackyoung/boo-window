@@ -373,9 +373,9 @@ export class BooWindow extends BaseWindow {
         node: this
       }, {
         name: 'transform-animation',
-        transformFrom: 'translateY(-20px)',
+        transformFrom: 'scale(0.8)',
         transformTo: 'none',
-        node: wrapper
+        node: this
       }],
       exit: [{
         name: 'fade-out-animation',
@@ -383,8 +383,8 @@ export class BooWindow extends BaseWindow {
       }, {
         name: 'transform-animation',
         transformFrom: 'none',
-        transformTo: 'translateY(20px)',
-        node: wrapper
+        transformTo: 'scale(0.8)',
+        node: this
       }]
     };
   }

@@ -17,7 +17,7 @@
       import "@polymer/app-layout/app-toolbar/app-toolbar.js";
     </script>
 
-    <script type="module" src="../boo-window.js"></script>
+    <script type="module" src="./window.js"></script>
 
     <!-- FIXME(polymer-modulizer):
         These imperative modules that innerHTML your HTML are
@@ -27,26 +27,7 @@
         able to expand the underlying CSS custom properties.
         See: https://github.com/Polymer/polymer-modulizer/issues/154
         -->
-    <script type="module">
-const $_documentContainer = document.createElement('div');
-
-$_documentContainer.innerHTML = `<custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-        boo-window {
-          @apply --shadow-elevation-16dp;
-        }
-        [slot=content] {
-          min-height: 400px; 
-        }
-        app-toolbar {
-          color: #fff;
-          background-color: #4285f4;
-        }
-      </style>
-    </custom-style>`;
-
-document.body.appendChild($_documentContainer);
-</script>
+    </script>
   </head>
   <body>
     <script type="module">
@@ -56,30 +37,7 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
       <h3>Basic boo-window demo</h3>
       <demo-snippet>
         <template>
-          <boo-window 
-            id="boo" 
-            opened
-            width="80%"
-            max-width="500"
-            max-height="400"
-            no-small-screen
-            no-shadow 
-            pos-policy="center">
-
-            <app-toolbar slot="move-trigger">
-              hello world
-            </app-toolbar>
-
-            <div slot="content">
-              <p>
-                将鼠标放在四个角落可改变拖动改变大小
-              </p>
-              <p>
-                可用鼠标拖动蓝色区域拖放窗口
-              </p>
-            </div>
-
-          </boo-window>
+          <test-boo-window></test-boo-window>
         </template>
       </demo-snippet>
     </div>`;
