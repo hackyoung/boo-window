@@ -46,7 +46,6 @@ export class BooWindow extends BaseWindow {
       .wrapper>div {
         width: 100%;
         height: 100%;
-        overflow: auto;
         @apply --boo-window;
       }
       .wrapper>a {
@@ -173,10 +172,26 @@ export class BooWindow extends BaseWindow {
         observer: '_update',
         notify: true
       },
-      maxHeight: Number,
-      maxWidth: Number,
-      minWidth: Number,
-      minHeight: Number,
+      maxHeight: {
+        type: Number,
+        reflectToAttribute: true,
+        observer: '_update',
+      },
+      maxWidth: {
+        type: Number,
+        reflectToAttribute: true,
+        observer: '_update',
+      },
+      minWidth: {
+        type: Number,
+        refulectToAttribute: true,
+        observer: '_update',
+      },
+      minHeight: {
+        type: Number,
+        reflectToAttribute: true,
+        observer: '_update'
+      },
       noResize: {
         type: Boolean,
         value: false,
@@ -545,6 +560,7 @@ export class BooWindow extends BaseWindow {
     if (opened) {
       this.style.display = 'block';
       this.update();
+      this._update();
       this.playAnimation('entry');
       return;
     }
