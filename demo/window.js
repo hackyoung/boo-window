@@ -6,7 +6,9 @@ class Win extends PolymerElement {
     return html`
       <style>
         boo-window {
-          @apply --shadow-elevation-16dp;
+          --boo-window-container: {
+            @apply --shadow-elevation-16dp;
+          }
         }
         [slot=content] {
           min-height: 400px; 

@@ -370,21 +370,21 @@ export class BooWindow extends BaseWindow {
     this.animationConfig = {
       entry: [{
         name: 'fade-in-animation',
-        node: this
+        node: this.wrapper()
       }, {
         name: 'transform-animation',
         transformFrom: 'scale(0.8)',
         transformTo: 'none',
-        node: this
+        node: this.wrapper()
       }],
       exit: [{
         name: 'fade-out-animation',
-        node: this
+        node: this.wrapper()
       }, {
         name: 'transform-animation',
         transformFrom: 'none',
         transformTo: 'scale(0.8)',
-        node: this
+        node: this.wrapper()
       }]
     };
   }
